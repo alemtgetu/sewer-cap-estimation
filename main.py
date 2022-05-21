@@ -7,6 +7,9 @@ import cvxpy as cvx
 from SimulateNetwork import FlowNetwork
 import networkx as nx
 from typing import Tuple
+import sys
+np.set_printoptions(threshold=sys.maxsize)
+
 # import pydot
 # import sys
 
@@ -22,7 +25,21 @@ if do_test:
 #print("overflow amounts with rain=",r1,"ofl=",ofl_amts2)
 
 
-def showTree(fn, overflow_report, colors):
+def showTree(fn, overflow_report, colors) -> None:
+    """ Plot the flow network graph
+
+    Parameters
+    ----------
+    fn: FlowNetwork
+    overflow_report: dict
+    colors: dict
+
+    Notes
+    ---------
+    * I wrote this initially for interactive mode using jupyter notebook 
+    * When code got very long I decided to move away from jupyter notebook
+    So, once the plot is shown must close the plot window to continue
+    """
     pos = graphviz_layout(fn.G, prog="twopi")
     plt.figure(figsize=(10, 10))
     nx.draw(fn.G, pos, with_labels=True, font_color="black",
@@ -58,6 +75,7 @@ def doAnalysis(protocols, show_tree) -> Tuple[dict, FlowNetwork]:
             the rain critical amount
     show_tree: bool
         If True the simulated flow newtork graph tree will be displayed
+
     Returns
     -------
     overflow_report: dict
@@ -164,12 +182,13 @@ def main() -> None:
     protocols["design_list"] = [3, 4, 3, 2]
     protocols["r_crit"] = 2.2
 
+    # for debuging perposes
+    # seeding np.random to generate similar numbers everytime
     np.random.seed(23)
     # print(protocols)
-    overflow_reports, fn = doAnalysis(protocols, False)
+    overflow_reports, fn = doAnalysis(protocols, True)
     # print("overlow report", overflow_reports, sep="\n")
 
-    # prnum = 0
     totMinCap = np.sum(fn.mincap[0])
     totCap = 1.13*totMinCap
     fG = nx.Graph(fn.G)

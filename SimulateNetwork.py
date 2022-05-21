@@ -25,8 +25,11 @@ class FlowNetwork:
         self.NI = self.N-self.NT
         self.A = nx.adjacency_matrix(G)
         self.mincap = self.makeMinCap()
+        # randomly setting capacity for each node
+        # for simplicity during repetion in development process, node 7 is enforced
         mult = np.random.uniform(1.1, 1.5, self.N-1)
-        mult = np.insert(mult, 8, 1)
+        # enusres overflow at node 7 above r_critcal all the time
+        mult = np.insert(mult, 7, 1)
         self.cap = mult*self.mincap.flatten()
 
     def getMinCap(self): return self.mincap.flatten()
